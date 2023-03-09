@@ -21,6 +21,7 @@ func main() {
 	prog := cli.NewApp()
 	prog.Name = "Carnival"
 	prog.HelpName = "carnival"
+	prog.Usage = "For testing connectivity to SMB shares"
 
 	prog.Commands = []*cli.Command{
 		{
