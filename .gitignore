@@ -1,2 +1,4 @@
-
+# ignore builds
+carnival
+carnival.exe
 dist/
