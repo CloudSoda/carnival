@@ -1,6 +1,7 @@
 package samba
 
 import (
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -75,12 +76,13 @@ func List(cliCtx *cli.Context) error {
 		} else {
 			name = info.Name()
 		}
-		fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t %s\n",
+		fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t %s \t%s\n",
 			info.Mode().String(),
 			strconv.FormatInt(info.Size(), 10),
 			monthDay,
 			date2,
-			name)
+			name,
+			hex.EncodeToString([]byte(info.Name())))
 	}
 	tw.Flush()
 
