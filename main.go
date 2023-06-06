@@ -22,6 +22,13 @@ func main() {
 	prog.Name = "Carnival"
 	prog.HelpName = "carnival"
 	prog.Usage = "For testing connectivity to SMB shares"
+	prog.Flags = []cli.Flag{
+		&cli.StringSliceFlag{
+			Name:    "options",
+			Aliases: []string{"o"},
+			Usage:   "mount options",
+		},
+	}
 
 	prog.Commands = []*cli.Command{
 		{
@@ -29,6 +36,12 @@ func main() {
 			Usage:     "copy a file from a samba share to a local destination",
 			UsageText: "carnival cp [smburl] [destination]",
 			Action:    samba.Copy,
+		},
+		{
+			Name:      "cpto",
+			Usage:     "copy a file to a samba share from a local source",
+			UsageText: "carnival cpto [destination] [smburl]",
+			Action:    samba.CopyTo,
 		},
 		{
 			Name:      "help",

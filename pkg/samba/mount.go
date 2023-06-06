@@ -1,10 +1,27 @@
 package samba
 
 import (
+	"fmt"
 	"net"
 
-	"github.com/hirochachacha/go-smb2"
+	"github.com/cloudsoda/go-smb2"
 )
+
+func parseOptions(strOpts []string) ([]smb2.MountOption, error) {
+	var mos []smb2.MountOption
+	for _, so := range strOpts {
+		switch so {
+		case "mapchars":
+			mos = append(mos, smb2.WithMapChars())
+		case "mapposix":
+			mos = append(mos, smb2.WithMapPosix())
+		default:
+			return nil, fmt.Errorf("unknown mount options: %v", so)
+		}
+	}
+
+	return mos, nil
+}
 
 func connect(u URL) (*smb2.Session, error) {
 	conn, err := net.Dial("tcp", u.Address)

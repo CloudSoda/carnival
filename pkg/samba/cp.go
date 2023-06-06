@@ -50,7 +50,12 @@ func Copy(ctx *cli.Context) error {
 	}
 	defer session.Logoff()
 
-	share, err := session.Mount(u.Share)
+	mos, err := parseOptions(ctx.StringSlice("options"))
+	if err != nil {
+		return fmt.Errorf("parsing mount options: %v", err)
+	}
+
+	share, err := session.Mount(u.Share, mos...)
 	if err != nil {
 		return fmt.Errorf("mounting '%s': %v", u.Share, err)
 	}
@@ -109,6 +114,56 @@ func Copy(ctx *cli.Context) error {
 	speedInBytes := float64(info.Size()) / dur.Seconds()
 	speedInMBytes := speedInBytes / 1024 / 1024
 	fmt.Fprintf(os.Stdout, "\rTook %v. %v MB/s\n", dur, speedInMBytes)
+
+	return nil
+}
+
+func CopyTo(ctx *cli.Context) error {
+	if ctx.NArg() != 2 {
+		return errors.New("2 arguments required")
+	}
+
+	srcPath := ctx.Args().Get(0)
+	u, err := newURL(ctx.Args().Get(1))
+	if err != nil {
+		return err
+	}
+
+	f, err := os.Open(srcPath)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	session, err := connect(u)
+	if err != nil {
+		return fmt.Errorf("connect failed: %v", err)
+	}
+	defer session.Logoff()
+
+	mos, err := parseOptions(ctx.StringSlice("options"))
+	if err != nil {
+		return fmt.Errorf("parsing mount options: %v", err)
+	}
+
+	share, err := session.Mount(u.Share, mos...)
+	if err != nil {
+		return fmt.Errorf("mounting '%s': %v", u.Share, err)
+	}
+
+	dst, err := share.Create(u.Path)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+
+	if _, err := io.Copy(dst, f); err != nil {
+		return err
+	}
+
+	if err := dst.Close(); err != nil {
+		return fmt.Errorf("closing file: %v", err)
+	}
 
 	return nil
 }

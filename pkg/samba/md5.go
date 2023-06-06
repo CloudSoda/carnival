@@ -25,7 +25,12 @@ func MD5(ctx *cli.Context) error {
 	}
 	defer session.Logoff()
 
-	share, err := session.Mount(u.Share)
+	mos, err := parseOptions(ctx.StringSlice("options"))
+	if err != nil {
+		return fmt.Errorf("parsing mount options: %v", err)
+	}
+
+	share, err := session.Mount(u.Share, mos...)
 	if err != nil {
 		return fmt.Errorf("mounting '%s': %v", u.Share, err)
 	}
