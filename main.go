@@ -23,10 +23,17 @@ func main() {
 	prog.HelpName = "carnival"
 	prog.Usage = "For testing connectivity to SMB shares"
 	prog.Flags = []cli.Flag{
-		&cli.StringSliceFlag{
-			Name:    "options",
-			Aliases: []string{"o"},
-			Usage:   "mount options",
+		&cli.StringFlag{
+			Name:  samba.FlagDomain,
+			Usage: "the user account's `DOMAIN`",
+		},
+		&cli.BoolFlag{
+			Name:  samba.FlagMapchars,
+			Usage: "use the equivalent of the samba 'mapchars' option",
+		},
+		&cli.BoolFlag{
+			Name:  samba.FlagMapposix,
+			Usage: "use the equivalent of the samba 'mapposix' option",
 		},
 	}
 

@@ -5,25 +5,25 @@ import (
 	"net"
 
 	"github.com/cloudsoda/go-smb2"
+	"github.com/urfave/cli/v2"
 )
 
-func parseOptions(strOpts []string) ([]smb2.MountOption, error) {
+func parseOptions(ctx *cli.Context) []smb2.MountOption {
 	var mos []smb2.MountOption
-	for _, so := range strOpts {
-		switch so {
-		case "mapchars":
-			mos = append(mos, smb2.WithMapChars())
-		case "mapposix":
-			mos = append(mos, smb2.WithMapPosix())
-		default:
-			return nil, fmt.Errorf("unknown mount options: %v", so)
-		}
+	if ctx.Bool(FlagMapchars) {
+		mos = append(mos, smb2.WithMapChars())
 	}
-
-	return mos, nil
+	if ctx.Bool(FlagMapposix) {
+		mos = append(mos, smb2.WithMapPosix())
+	}
+	return mos
 }
 
-func connect(u URL) (*smb2.Session, error) {
+func connect(u URL, domain string) (*smb2.Session, error) {
+	if u.Credentials == nil && domain == "" {
+		return nil, fmt.Errorf("--%s was specified but no user was specified in the URL", FlagDomain)
+	}
+
 	conn, err := net.Dial("tcp", u.Address)
 	if err != nil {
 		return nil, err
@@ -34,6 +34,7 @@ func connect(u URL) (*smb2.Session, error) {
 		d.Initiator = &smb2.NTLMInitiator{
 			User:     u.Credentials.Username,
 			Password: u.Credentials.Password,
+			Domain:   domain,
 		}
 	} else {
 		d.Initiator = &smb2.NTLMInitiator{}

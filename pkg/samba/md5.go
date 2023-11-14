@@ -19,18 +19,13 @@ func MD5(ctx *cli.Context) error {
 		return errors.New("no share name specified")
 	}
 
-	session, err := connect(u)
+	session, err := connect(u, ctx.String(FlagDomain))
 	if err != nil {
 		return fmt.Errorf("connect failed: %v", err)
 	}
 	defer session.Logoff()
 
-	mos, err := parseOptions(ctx.StringSlice("options"))
-	if err != nil {
-		return fmt.Errorf("parsing mount options: %v", err)
-	}
-
-	share, err := session.Mount(u.Share, mos...)
+	share, err := session.Mount(u.Share, parseOptions(ctx)...)
 	if err != nil {
 		return fmt.Errorf("mounting '%s': %v", u.Share, err)
 	}
