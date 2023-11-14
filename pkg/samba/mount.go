@@ -36,9 +36,7 @@ func connect(u URL) (*smb2.Session, error) {
 			Password: u.Credentials.Password,
 		}
 	} else {
-		d.Initiator = &smb2.NTLMInitiator{
-			User: "guest",
-		}
+		d.Initiator = &smb2.NTLMInitiator{}
 	}
 
 	srvr, err := d.Dial(conn)

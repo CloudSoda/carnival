@@ -20,7 +20,7 @@ The `cp` command will tell you how long the transfer took and the average transf
 # List the files at the root of the share
 carnival ls smb://user:password@address/sharename/
 
-# List the fiels in the 'Games' directory of the share
+# List the files in the 'Games' directory of the share
 carnival ls smb://user:password@address/sharename/Games
 ```
 
