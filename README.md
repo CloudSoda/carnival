@@ -4,29 +4,37 @@ A tool for testing connectivity to SMB shares. With it you can:
 
 ### Calculate the MD5 hash of a file
 ```
-carnival md5 smb://user:password@address/sharename/path/to/file.txt
+$ carnival -u user md5 smb://address/sharename/path/to/file.txt
+Password:
 ```
 
 ### Copy a file from an SMB share to a local destination
 ```
-carnival cp smb://user:password@address/sharename/file.bin .
+$ carnival -u user cp smb://address/sharename/file.bin .
+Password:
 # OR rename it at the destination
-carnival cp smb://user:password@address/sharename/file.bin file.binary
+$ carnival -u user cp smb://address/sharename/file.bin file.binary
+Password:
 ```
 The `cp` command will tell you how long the transfer took and the average transfer speed.
 
 ### List the files in a directory
 ```
 # List the files at the root of the share
-carnival ls smb://user:password@address/sharename/
+$ carnival -u user ls smb://address/sharename/
+Password:
 
 # List the files in the 'Games' directory of the share
-carnival ls smb://user:password@address/sharename/Games
+$ carnival -u user ls smb://address/sharename/Games
+Password:
 ```
 
 ### Print the names of publicly visible SMB shares
 ```
-carnival shares smb://user:password@address
+$ carnival -u user shares smb://address
+Password:
 ```
 
-If a username and password are not included in the SMB url, carnival will authenticate as `guest` with an empty password.
+If the username is set through the `-u/--username` flag, the password will be prompted
+
+If no username is set, an anonymous session will be attempted
