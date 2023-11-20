@@ -49,12 +49,12 @@ func main() {
 			UsageText: "carnival cp [smburl] [destination]",
 			Action:    samba.Copy,
 		},
-		{
-			Name:      "cpto",
-			Usage:     "copy a file to a samba share from a local source",
-			UsageText: "carnival cpto [destination] [smburl]",
-			Action:    samba.CopyTo,
-		},
+		// {
+		// 	Name:      "cpto",
+		// 	Usage:     "copy a file to a samba share from a local source",
+		// 	UsageText: "carnival cpto [fromlocal] [tosmburl]",
+		// 	Action:    samba.CopyTo,
+		// },
 		{
 			Name:      "help",
 			Usage:     "show the app or a command's help text",

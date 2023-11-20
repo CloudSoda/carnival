@@ -10,6 +10,7 @@ require (
 	github.com/stretchr/testify v1.8.3
 	github.com/urfave/cli/v2 v2.25.0
 	golang.org/x/exp v0.0.0-20230307190834-24139beb5833
+	golang.org/x/term v0.14.0
 )
 
 require (
@@ -35,7 +36,6 @@ require (
 	golang.org/x/crypto v0.15.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.14.0 // indirect
-	golang.org/x/term v0.14.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
