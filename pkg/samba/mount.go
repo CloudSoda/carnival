@@ -1,7 +1,6 @@
 package samba
 
 import (
-	"fmt"
 	"net"
 
 	"github.com/cloudsoda/go-smb2"
@@ -20,10 +19,6 @@ func parseOptions(ctx *cli.Context) []smb2.MountOption {
 }
 
 func connect(u URL, domain string) (*smb2.Session, error) {
-	if u.Credentials == nil && domain == "" {
-		return nil, fmt.Errorf("--%s was specified but no user was specified in the URL", FlagDomain)
-	}
-
 	conn, err := net.Dial("tcp", u.Address)
 	if err != nil {
 		return nil, err

@@ -35,6 +35,11 @@ func main() {
 			Name:  samba.FlagMapposix,
 			Usage: "use the equivalent of the samba 'mapposix' option",
 		},
+		&cli.StringFlag{
+			Aliases: []string{"u"},
+			Name:    samba.FlagUsername,
+			Usage:   "use the given username, the program will prompt for password",
+		},
 	}
 
 	prog.Commands = []*cli.Command{

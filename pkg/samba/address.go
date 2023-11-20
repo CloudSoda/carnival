@@ -4,10 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"os"
 	"path"
 	"strings"
+	"syscall"
 
 	"github.com/urfave/cli/v2"
+	"golang.org/x/term"
 )
 
 type Credentials struct {
@@ -22,15 +25,55 @@ type URL struct {
 	Credentials *Credentials
 }
 
+// credentialsFromContext gets username from cli context and if set, it prompts the password from the terminal.
+// If the flag is not set, then empty credentials will be returned (for anonymous session).
+func credentialsFromContext(ctx *cli.Context) (*Credentials, error) {
+	creds := &Credentials{}
+
+	if username := ctx.String(FlagUsername); username != "" {
+		password, err := promptForPassword()
+		if err != nil {
+			return nil, err
+		}
+
+		creds.Username = username
+		creds.Password = password
+	}
+
+	return creds, nil
+}
+
+// promptForPassword prompts password from terminal without echoing it
+func promptForPassword() (string, error) {
+	_, err := fmt.Fprint(os.Stderr, "Password:")
+	if err != nil {
+		return "", err
+	}
+
+	b, err := term.ReadPassword(syscall.Stdin)
+	if err != nil {
+		return "", err
+	}
+
+	_, _ = fmt.Fprintln(os.Stderr)
+
+	return string(b), nil
+}
+
 func urlFromContext(ctx *cli.Context) (URL, error) {
 	if ctx.NArg() == 0 {
 		return URL{}, errors.New("missing smb url")
 	}
 
-	return newURL(ctx.Args().First())
+	creds, err := credentialsFromContext(ctx)
+	if err != nil {
+		return URL{}, err
+	}
+
+	return newURL(ctx.Args().First(), creds)
 }
 
-func newURL(str string) (URL, error) {
+func newURL(str string, creds *Credentials) (URL, error) {
 	u2 := URL{}
 	u, err := url.Parse(str)
 	if err != nil {
@@ -47,6 +90,11 @@ func newURL(str string) (URL, error) {
 	if u.Port() == "" {
 		u2.Address = u.Hostname() + ":445"
 	}
+
+	if creds != nil {
+		u2.Credentials = creds
+	}
+
 	if u.User != nil {
 		u2.Credentials = &Credentials{
 			Username: u.User.Username(),
