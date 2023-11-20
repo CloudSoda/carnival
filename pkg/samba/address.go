@@ -7,7 +7,6 @@ import (
 	"os"
 	"path"
 	"strings"
-	"syscall"
 
 	"github.com/urfave/cli/v2"
 	"golang.org/x/term"
@@ -50,7 +49,7 @@ func promptForPassword() (string, error) {
 		return "", err
 	}
 
-	b, err := term.ReadPassword(syscall.Stdin)
+	b, err := term.ReadPassword(int(os.Stdin.Fd()))
 	if err != nil {
 		return "", err
 	}
