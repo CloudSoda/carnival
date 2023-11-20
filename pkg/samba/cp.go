@@ -118,8 +118,13 @@ func CopyTo(ctx *cli.Context) error {
 		return errors.New("2 arguments required")
 	}
 
+	creds, err := credentialsFromContext(ctx)
+	if err != nil {
+		return err
+	}
+
 	srcPath := ctx.Args().Get(0)
-	u, err := newURL(ctx.Args().Get(1))
+	u, err := newURL(ctx.Args().Get(1), creds)
 	if err != nil {
 		return err
 	}
