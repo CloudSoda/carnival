@@ -35,6 +35,6 @@ $ carnival -u user shares smb://address
 Password:
 ```
 
-If the username is set through the `-u/--username` flag, the password will be prompted
+If the `-u/--username` flag is set, you will be prompted for the password.
 
-If no username is set, an anonymous session will be attempted
+If no username is provided, carnival will attempt to authenticate anonymously.

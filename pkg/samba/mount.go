@@ -1,6 +1,7 @@
 package samba
 
 import (
+	"context"
 	"net"
 
 	"github.com/cloudsoda/go-smb2"
@@ -35,7 +36,7 @@ func connect(u URL, domain string) (*smb2.Session, error) {
 		d.Initiator = &smb2.NTLMInitiator{}
 	}
 
-	srvr, err := d.Dial(conn)
+	srvr, err := d.DialContextWithHostname(context.Background(), conn, u.Address)
 	if err != nil {
 		conn.Close()
 		return nil, err

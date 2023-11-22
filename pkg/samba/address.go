@@ -24,8 +24,8 @@ type URL struct {
 	Credentials *Credentials
 }
 
-// credentialsFromContext gets username from cli context and if set, it prompts the password from the terminal.
-// If the flag is not set, then empty credentials will be returned (for anonymous session).
+// credentialsFromContext gets username from ctx and if set, prompts the user for a password.
+// If the username is not set, nil Credentials will be returned.
 func credentialsFromContext(ctx *cli.Context) (*Credentials, error) {
 	creds := &Credentials{}
 
@@ -42,7 +42,7 @@ func credentialsFromContext(ctx *cli.Context) (*Credentials, error) {
 	return creds, nil
 }
 
-// promptForPassword prompts password from terminal without echoing it
+// promptForPassword prompts for a password via the terminal
 func promptForPassword() (string, error) {
 	_, err := fmt.Fprint(os.Stderr, "Password:")
 	if err != nil {
@@ -89,11 +89,9 @@ func newURL(str string, creds *Credentials) (URL, error) {
 	if u.Port() == "" {
 		u2.Address = u.Hostname() + ":445"
 	}
-
 	if creds != nil {
 		u2.Credentials = creds
 	}
-
 	if u.User != nil {
 		u2.Credentials = &Credentials{
 			Username: u.User.Username(),
