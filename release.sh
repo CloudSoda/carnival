@@ -27,7 +27,7 @@ for goos in "${GOOS_VALUES[@]}"; do
     
     # Execute the build command directly in current directory
     echo "Building $BINARY_NAME for $goos/$goarch..."
-    go build $OUTPUT_FLAG
+    go build -ldflags "-s -w" $OUTPUT_FLAG
     
     echo "✓ Build successful for $goos/$goarch"
     
