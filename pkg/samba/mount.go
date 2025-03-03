@@ -1,7 +1,7 @@
 package samba
 
 import (
-	"net"
+	"context"
 
 	"github.com/cloudsoda/go-smb2"
 	"github.com/urfave/cli/v2"
@@ -19,11 +19,6 @@ func parseOptions(ctx *cli.Context) []smb2.MountOption {
 }
 
 func connect(u URL, domain string) (*smb2.Session, error) {
-	conn, err := net.Dial("tcp", u.Address)
-	if err != nil {
-		return nil, err
-	}
-
 	d := &smb2.Dialer{}
 	if u.Credentials != nil {
 		d.Initiator = &smb2.NTLMInitiator{
@@ -35,9 +30,8 @@ func connect(u URL, domain string) (*smb2.Session, error) {
 		d.Initiator = &smb2.NTLMInitiator{}
 	}
 
-	srvr, err := d.Dial(conn)
+	srvr, err := d.Dial(context.Background(), u.Address)
 	if err != nil {
-		conn.Close()
 		return nil, err
 	}
 
