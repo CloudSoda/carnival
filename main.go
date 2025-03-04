@@ -80,7 +80,7 @@ func main() {
 			Action:    samba.Sd,
 			Flags: []cli.Flag{
 				&cli.BoolFlag{
-					Name:  "debug",
+					Name:  "pretty",
 					Usage: "when set, will output the security descriptor indented",
 				},
 			},
