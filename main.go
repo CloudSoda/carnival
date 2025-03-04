@@ -74,6 +74,18 @@ func main() {
 			Action:    samba.MD5,
 		},
 		{
+			Name:      "sd",
+			Usage:     "display the security descriptor of a file in string format",
+			UsageText: "carnival sd [smburl]",
+			Action:    samba.Sd,
+			Flags: []cli.Flag{
+				&cli.BoolFlag{
+					Name:  "debug",
+					Usage: "when set, will output the security descriptor indented",
+				},
+			},
+		},
+		{
 			Name:      "shares",
 			Usage:     "list the publicly visible shares",
 			UsageText: "carnival shares [smburl]",
