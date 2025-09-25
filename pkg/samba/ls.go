@@ -1,11 +1,11 @@
 package samba
 
 import (
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"io/fs"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 	"text/tabwriter"
@@ -13,7 +13,6 @@ import (
 
 	"cloudsoda.dev/carnival/pkg/ansi"
 	"github.com/urfave/cli/v2"
-	"golang.org/x/exp/slices"
 )
 
 func isMedia(name string) bool {
@@ -50,8 +49,8 @@ func List(ctx *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("listing '%s': %v", u.Path, err)
 	}
-	slices.SortFunc(infos, func(a, b fs.FileInfo) bool {
-		return a.Name() < b.Name()
+	slices.SortFunc(infos, func(a, b fs.FileInfo) int {
+		return strings.Compare(a.Name(), b.Name())
 	})
 
 	tw := tabwriter.NewWriter(os.Stdout, 0, 1, 1, ' ', tabwriter.AlignRight)
@@ -76,13 +75,12 @@ func List(ctx *cli.Context) error {
 		} else {
 			name = info.Name()
 		}
-		fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t %s \t%s\n",
+		fmt.Fprintf(tw, "%s\t%s\t%s\t%s\t %s\n",
 			info.Mode().String(),
 			strconv.FormatInt(info.Size(), 10),
 			monthDay,
 			date2,
-			name,
-			hex.EncodeToString([]byte(info.Name())))
+			name)
 	}
 	tw.Flush()
 
