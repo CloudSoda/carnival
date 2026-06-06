@@ -11,7 +11,7 @@ func Shares(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	session, err := connect(u, ctx.String(FlagDomain))
+	session, err := connect(ctx, u)
 	if err != nil {
 		return fmt.Errorf("connect failed: %v", err)
 	}

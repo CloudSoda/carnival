@@ -18,7 +18,7 @@ func Sd(ctx *cli.Context) error {
 		return errors.New("no share name specified")
 	}
 
-	session, err := connect(u, ctx.String(FlagDomain))
+	session, err := connect(ctx, u)
 	if err != nil {
 		return fmt.Errorf("connect failed: %v", err)
 	}

@@ -18,13 +18,20 @@ func parseOptions(ctx *cli.Context) []smb2.MountOption {
 	return mos
 }
 
-func connect(u URL, domain string) (*smb2.Session, error) {
+func connect(ctx *cli.Context, u URL) (*smb2.Session, error) {
 	d := &smb2.Dialer{}
-	if u.Credentials != nil {
+
+	if ctx.Bool(FlagKerberos) {
+		initiator, err := newKrb5Initiator(ctx, u)
+		if err != nil {
+			return nil, err
+		}
+		d.Initiator = initiator
+	} else if u.Credentials != nil {
 		d.Initiator = &smb2.NTLMInitiator{
 			User:     u.Credentials.Username,
 			Password: u.Credentials.Password,
-			Domain:   domain,
+			Domain:   ctx.String(FlagDomain),
 		}
 	} else {
 		d.Initiator = &smb2.NTLMInitiator{}

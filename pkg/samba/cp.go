@@ -44,7 +44,7 @@ func Copy(ctx *cli.Context) error {
 		return err
 	}
 
-	session, err := connect(u, ctx.String(FlagDomain))
+	session, err := connect(ctx, u)
 	if err != nil {
 		return fmt.Errorf("connect failed: %v", err)
 	}
@@ -118,14 +118,13 @@ func CopyTo(ctx *cli.Context) error {
 		return errors.New("2 arguments required")
 	}
 
-	creds, err := credentialsFromContext(ctx)
+	srcPath := ctx.Args().Get(0)
+	u, err := newURL(ctx.Args().Get(1), credentialsFromContext(ctx))
 	if err != nil {
 		return err
 	}
 
-	srcPath := ctx.Args().Get(0)
-	u, err := newURL(ctx.Args().Get(1), creds)
-	if err != nil {
+	if err := ensurePassword(ctx, &u); err != nil {
 		return err
 	}
 
@@ -135,7 +134,7 @@ func CopyTo(ctx *cli.Context) error {
 	}
 	defer f.Close()
 
-	session, err := connect(u, ctx.String(FlagDomain))
+	session, err := connect(ctx, u)
 	if err != nil {
 		return fmt.Errorf("connect failed: %v", err)
 	}
